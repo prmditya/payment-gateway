@@ -2,7 +2,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import AuthButton from "@/features/auth/sign-in-button-google";
 
 const plans = [
   {
@@ -97,7 +96,7 @@ export default function PricingPage() {
         {plans.map((plan) => (
           <Card
             key={plan.name}
-            className={`flex flex-col justify-between shadow-lg rounded-2xl transition-transform hover:scale-105 ${
+            className={`flex flex-col shadow-lg rounded-2xl transition-transform hover:scale-105${
               plan.popular ? "border-2 border-blue-500 relative" : ""
             }`}
           >
@@ -151,7 +150,6 @@ export default function PricingPage() {
           </Card>
         ))}
       </div>
-      <AuthButton className="mt-8" />
     </div>
   );
 }

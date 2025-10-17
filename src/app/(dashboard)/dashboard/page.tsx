@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { SignOutButton } from "@/features/auth/sign-out-button";
+import { CancelSubscriptionButton } from "@/features/subscription/cancel-subscription-button";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 
@@ -84,6 +85,17 @@ export default async function Dashboard() {
                 Your subscription will cancel at the end of the billing period.
               </div>
             )}
+
+            {/* Cancel Subscription Section */}
+            <div className="mt-6 pt-6 border-t">
+              <h3 className="font-semibold mb-3">Manage Subscription</h3>
+              <CancelSubscriptionButton
+                subscriptionId={activeSubscription.id}
+                planName={activeSubscription.planName}
+                currentPeriodEnd={activeSubscription.currentPeriodEnd}
+                cancelAtPeriodEnd={activeSubscription.cancelAtPeriodEnd}
+              />
+            </div>
           </div>
         ) : (
           <div className="text-center py-8">
