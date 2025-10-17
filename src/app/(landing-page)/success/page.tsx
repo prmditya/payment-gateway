@@ -5,16 +5,41 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+type Subscription = {
+  id: string;
+  planName: string;
+  amount: number;
+  currency: string;
+  interval: string;
+  status: string;
+  currentPeriodEnd: string;
+};
+
 export default function SuccessPage() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   useEffect(() => {
     if (sessionId) {
-      // Here you could verify the session with your backend if needed
-      setLoading(false);
+      // Call API to save subscription to database
+      fetch(`/api/checkout/success?session_id=${sessionId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            setError(data.error);
+          } else {
+            setSubscription(data.subscription);
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error saving subscription:", err);
+          setError("Failed to process subscription");
+          setLoading(false);
+        });
     } else {
       setError("No session found");
       setLoading(false);
@@ -79,11 +104,25 @@ export default function SuccessPage() {
           <p className="text-gray-600 text-lg">
             Thank you for subscribing! Your payment has been processed successfully.
           </p>
+
+          {subscription && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 my-4">
+              <h3 className="font-semibold text-blue-900 mb-2">Subscription Details</h3>
+              <div className="text-sm text-blue-800 space-y-1">
+                <p><strong>Plan:</strong> {subscription.planName}</p>
+                <p><strong>Amount:</strong> ${(subscription.amount / 100).toFixed(2)}/{subscription.interval}</p>
+                <p><strong>Status:</strong> <span className="capitalize">{subscription.status}</span></p>
+                <p><strong>Next Billing:</strong> {new Date(subscription.currentPeriodEnd).toLocaleDateString()}</p>
+              </div>
+            </div>
+          )}
+
           <p className="text-sm text-gray-500">
             You will receive a confirmation email shortly with your subscription details.
           </p>
+
           <div className="pt-6 space-y-3">
-            <Link href="/">
+            <Link href="/dashboard">
               <Button className="w-full bg-blue-600 hover:bg-blue-700 py-6 text-lg">
                 Go to Dashboard
               </Button>
@@ -94,6 +133,7 @@ export default function SuccessPage() {
               </Button>
             </Link>
           </div>
+
           {sessionId && (
             <p className="text-xs text-gray-400 pt-4">
               Session ID: {sessionId}

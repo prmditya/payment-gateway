@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import AuthButton from "@/features/auth/sign-in-button-google";
 
 const plans = [
   {
@@ -69,7 +70,13 @@ export default function PricingPage() {
       }
     } catch (error) {
       console.error("Checkout error:", error);
-      alert(`Error: ${error instanceof Error ? error.message : "Something went wrong. Please try again."}`);
+      alert(
+        `Error: ${
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again."
+        }`
+      );
     } finally {
       setLoading(null);
     }
@@ -144,6 +151,7 @@ export default function PricingPage() {
           </Card>
         ))}
       </div>
+      <AuthButton className="mt-8" />
     </div>
   );
 }
