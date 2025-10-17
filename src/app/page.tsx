@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/dashboard");
+    router.push("/home");
   }, [router]);
   return (
     <div className="flex h-screen w-full items-center justify-center">
